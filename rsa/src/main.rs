@@ -1,7 +1,7 @@
 use std::io::{self, Write};
-use num_bigint::{BigUint, RandBigInt};
-use num_traits::{Zero, One, ToPrimitive};
-use primes::is_prime;
+use num_bigint::{BigUint};
+use num_traits::{Zero, One};
+use num_primes::Generator;
 
 // Compute m^pow mod n
 fn power_mod(m: BigUint, n: BigUint, pow: BigUint) -> BigUint {
@@ -46,27 +46,13 @@ fn mod_inverse(e: &BigUint, n: &BigUint) -> Option<BigUint> {
     }
 }
 
-// Generates a random prime number and returns it
-fn rand_prime(bits: usize) -> BigUint {
-    let mut rng = rand::thread_rng();
-    loop {
-        let randp = rng.gen_biguint(bits as u64);
-        let mut u64randp: u64 = 0;
-        match randp.to_u64() {
-            Some(value) => u64randp = value,
-            None => println!("Value is too large to fit into a u64."),
-        }
-        if is_prime(u64randp) {
-            return randp;
-        }
-    }
-}
-
 // Generate a key randomly
 fn key_gen(e: BigUint) -> (BigUint, BigUint, BigUint) {
     let bits = 1024;
-    let p = rand_prime(bits);
-    let q = rand_prime(bits);
+    let temp_p: num_primes::BigUint = Generator::new_prime(bits);
+    let temp_q: num_primes::BigUint = Generator::new_prime(bits);
+    let p = BigUint::from_bytes_be(&temp_p.to_bytes_be());
+    let q = BigUint::from_bytes_be(&temp_q.to_bytes_be());
     let n = &p *& q;
     let phi_n = (&p - BigUint::one()) * (&q - BigUint::one());
     let d = mod_inverse(&e, &phi_n).expect("Failed to calcuate mod inverse.");
@@ -91,10 +77,17 @@ fn main() {
     // Get user input
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("Failed to read line.");
+    let input = input.trim();
 
-    // Parse an integer from the input
-    let m: u32 = input.parse().expect("Please enter an integer.");
-    let m = BigUint::from(m);
+    // Convert the input to an integer
+    let m = if let Ok(num) = input.parse::<u32>() {
+        // If the input is numeric, use it directly
+        BigUint::from(num)
+    } else {
+        // If the input is text, convert it to a big integer
+        let bytes = input.as_bytes(); // Get the byte representation
+        BigUint::from_bytes_be(bytes) // Convert bytes to BigUint
+    };
 
     // Generate a key randomly
     let e = BigUint::from(65537u32);
@@ -107,6 +100,11 @@ fn main() {
     let c = enc(m.clone(), e.clone(), n.clone());
 
     // Verify that the ciphertext decrypts to the message again
-    let ptxt = dec(c, d, n, phi_n);
+    let ptxt = dec(c.clone(), d, n, phi_n);
+
     assert!(ptxt == m);
+    println!("Encryption successful!");
+    println!("Ciphertext: {}", c);
+    println!("Decrypted plaintext: {}", String::from_utf8_lossy(&ptxt.to_bytes_be()));
 }
+
