@@ -65,22 +65,21 @@ fn is_prime(n: &BigUint) -> bool{
 }
 
 // Get a random prime of size bits
-fn get_rand_prime(bits: u64, lbound: u64) -> BigUint {
+fn get_rand_prime(bits: u64) -> BigUint {
     let mut rng = rand::thread_rng();
     let mut a = rng.gen_biguint(bits);
 
-    while !is_prime(&(&a+lbound)) {
+    while !is_prime(&a) {
         a = rng.gen_biguint(bits);
     }
-    a+lbound
+    a
 }
 
 // Generate a key randomly
 fn key_gen(e: BigUint) -> (BigUint, BigUint, BigUint) {
     let bits: u64 = 1024;
-    let lbound: u64 = 2u64.pow(32);
-    let p = get_rand_prime(bits, lbound);
-    let q = get_rand_prime(bits, lbound);
+    let p = get_rand_prime(bits/2);
+    let q = get_rand_prime(bits/2);
     let n = &p * &q;
     let phi_n = (&p - BigUint::one()) * (&q - BigUint::one());
     let d = mod_inverse(&e, &phi_n).expect("Failed to calcuate mod inverse.");
