@@ -18,7 +18,7 @@ An outline of the projects I intend to complete is available below.
 5. **`aes_ecb`**: The AES-256 block cipher designed to operate in electronic codebook mode.
 6. **`csidh`**: A standard implementation of the CSIDH "post-quantum" cryptographic protocol.
 7. **`kyber_pke`**: The CRYSTALS-Kyber lattice-based public key encryption scheme.
-8. **`kyber_kem`**: The CRSYALS-Kyber lattice-based key encapsulation module.
+8. **`kyber_kem`**: The CRYSYALS-Kyber lattice-based key encapsulation module.
 
 
 
