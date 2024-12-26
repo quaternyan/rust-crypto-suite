@@ -19,7 +19,6 @@ An outline of the projects I intend to complete is available below.
 6. **`csidh`**: A standard implementation of the CSIDH "post-quantum" cryptographic protocol.
 7. **`kyber_pke` and `kyber_kem`**: The CRYSTALS-Kyber lattice-based public key encryption scheme and key encapsulation modules.
 8. **`sntrup761x25519`**: A modern post-quantum key exchange used by OpenSSL.
-9. 
 
 
 
