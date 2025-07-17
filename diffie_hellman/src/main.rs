@@ -1,6 +1,5 @@
-use elliptic_curve::Curve;
-use num_bigint::{RandBigInt, BigUint, BigInt, ToBigUint, Sign};
-use num_traits::{Zero, One};
+use p256::{NistP256, ProjectivePoint, Scalar};
+use rand_core::OsRng;
 
 fn main() {
     println!("Hello, world!");

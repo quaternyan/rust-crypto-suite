@@ -4,3 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+p256       = { version = "0.13", default-features = true } 
+rand_core  = "0.6"
+hex        = "0.4"
+
